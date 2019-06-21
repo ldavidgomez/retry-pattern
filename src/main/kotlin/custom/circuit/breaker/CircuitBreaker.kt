@@ -1,11 +1,16 @@
 package packageName.custom.circuit.breaker
 
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
+import packageName.wrappers.LoggerWrapper
 import java.time.Duration
 import java.time.LocalDateTime
+import kotlin.reflect.KFunction0
 
-internal class CircuitBreaker {
+@Service
+class CircuitBreaker @Autowired constructor(private val logger: LoggerWrapper) {
 
-    private val maxAttempts = 3
+    private val maxAttempts = 2
     private val openTimeout = Duration.ofMillis(5000L)
     private var errorsCount: Int = 0
     @Volatile
@@ -14,7 +19,7 @@ internal class CircuitBreaker {
     private var lastFailure: LocalDateTime? = null
 
     private val isTimerExpired: Boolean
-        get() = lastFailure!!.plus(openTimeout) > LocalDateTime.now()
+        get() = lastFailure!!.plus(openTimeout) < LocalDateTime.now()
 
     enum class CircuitBreakerState {
         CLOSED,
@@ -23,13 +28,16 @@ internal class CircuitBreaker {
     }
 
     @Throws(Exception::class)
-    fun run(action: Runnable) {
+    fun run(action: KFunction0<String>) {
+        logger.info("state is $state")
         if (state == CircuitBreakerState.CLOSED) {
             try {
-                action.run()
+                action.invoke()
+                reset()
+                logger.info("Success calling external service")
             } catch (ex: Exception) {
                 handleException(ex)
-                throw ex
+                throw Exception("Something was wrong")
             }
 
         } else {
@@ -37,13 +45,15 @@ internal class CircuitBreaker {
                 state = CircuitBreakerState.HALF_OPEN
 
                 try {
-                    action.run()
+                    action.invoke()
                     reset()
                 } catch (ex: Exception) {
                     open(ex)
-                    throw ex
+                    throw Exception("Fails when HALF_OPEN")
                 }
 
+            } else {
+                throw Exception("Circuit is still opened until ${lastFailure!!.plus(openTimeout)}")
             }
 
             throw lastExceptionThrown!!
@@ -51,9 +61,9 @@ internal class CircuitBreaker {
     }
 
     private fun open(exception: Exception) {
+        logger.error("Opening circuit...")
         state = CircuitBreakerState.OPEN
         lastFailure = LocalDateTime.now()
-        errorsCount = 0
         lastExceptionThrown = exception
     }
 
@@ -61,14 +71,14 @@ internal class CircuitBreaker {
         errorsCount = 0
         lastExceptionThrown = null
         state = CircuitBreakerState.CLOSED
+        logger.info("Closing circuit...")
     }
 
     private fun handleException(exception: Exception) {
         errorsCount++
+        logger.error("Service fails for $errorsCount times.")
         if (errorsCount >= maxAttempts) {
-            lastExceptionThrown = exception
-            state = CircuitBreakerState.OPEN
-            lastFailure = LocalDateTime.now()
+            open(exception)
         }
     }
 }
