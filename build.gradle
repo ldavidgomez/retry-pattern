@@ -1,0 +1,70 @@
+buildscript {
+    ext.kotlin_version = '1.3.40'
+    ext {
+        kotlinVersion = '1.3.40'
+        springBootVersion = '1.5.9.RELEASE'
+    }
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
+        classpath "org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}"
+        classpath "org.jetbrains.kotlin:kotlin-noarg:$kotlinVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.3.31'
+}
+
+apply plugin: "java"
+apply plugin: "kotlin"
+apply plugin: "kotlin-spring"
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: "jacoco"
+
+springBoot {
+    mainClass = "packageName.SpringEntryPoint"
+}
+
+group 'circuit-breaker-pattern'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven { url "http://repo.spring.io/libs-milestone" }
+    maven { url "http://jcenter.bintray.com" }
+}
+
+dependencies {
+    compile('org.springframework.retry:spring-retry')
+    compile('org.springframework.boot:spring-boot-starter')
+    compile('org.springframework.boot:spring-boot-starter-undertow')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.codehaus.groovy:groovy')
+
+    compile group: 'org.aspectj', name: 'aspectjrt', version: '1.6.11'
+    compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.6.11'
+
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+sourceSets {
+    main.java.srcDirs += "src/main/kotlin"
+    test.java.srcDirs += "src/test/kotlin"
+}
