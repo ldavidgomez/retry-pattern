@@ -9,7 +9,7 @@ import packageName.wrappers.LoggerWrapper
 
 @Service
 @Slf4j
-class ExternalSampleService @Autowired constructor(private val logger: LoggerWrapper) {
+class SpringSampleService @Autowired constructor(private val logger: LoggerWrapper) {
 
     /**
      * Annotated with maxAttempts = 3 for test.
