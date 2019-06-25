@@ -33,7 +33,7 @@ class CircuitBreaker @Autowired constructor(private val logger: LoggerWrapper) {
         if (state == CircuitBreakerState.CLOSED) {
             try {
                 action.invoke()
-                reset()
+                resetCircuit()
                 logger.info("Success calling external service")
             } catch (ex: Exception) {
                 handleException(ex)
@@ -46,28 +46,28 @@ class CircuitBreaker @Autowired constructor(private val logger: LoggerWrapper) {
 
                 try {
                     action.invoke()
-                    reset()
+                    resetCircuit()
                 } catch (ex: Exception) {
-                    open(ex)
+                    openCircuit(ex)
                     throw Exception("Fails when HALF_OPEN")
                 }
 
             } else {
-                throw Exception("Circuit is still opened until ${lastFailure!!.plus(openTimeout)}")
+                throw Exception("Circuit is still opened. Retry time ${lastFailure!!.plus(openTimeout)}")
             }
 
             throw lastExceptionThrown!!
         }
     }
 
-    private fun open(exception: Exception) {
-        logger.error("Opening circuit...")
-        state = CircuitBreakerState.OPEN
+    private fun openCircuit(exception: Exception) {
         lastFailure = LocalDateTime.now()
         lastExceptionThrown = exception
+        state = CircuitBreakerState.OPEN
+        logger.error("Opening circuit...")
     }
 
-    private fun reset() {
+    private fun resetCircuit() {
         errorsCount = 0
         lastExceptionThrown = null
         state = CircuitBreakerState.CLOSED
@@ -78,7 +78,7 @@ class CircuitBreaker @Autowired constructor(private val logger: LoggerWrapper) {
         errorsCount++
         logger.error("Service fails for $errorsCount times.")
         if (errorsCount >= maxAttempts) {
-            open(exception)
+            openCircuit(exception)
         }
     }
 }
