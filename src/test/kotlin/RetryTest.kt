@@ -31,8 +31,8 @@ class RetryTest {
 
         val result = retry.run { success }
 
-        assertThat(success).isEqualTo(result)
-        assertThat(0).isEqualTo(retry.retryCounter)
+        assertThat(result).isEqualTo(success)
+        assertThat(retry.retryCounter).isEqualTo(0)
     }
 
     @Test
@@ -44,9 +44,8 @@ class RetryTest {
 
         val result = retry.run(externalService::run)
 
-
-        assertThat(success).isEqualTo(result)
-        assertThat(1).isEqualTo(retry.retryCounter)
+        assertThat(result).isEqualTo(success)
+        assertThat(retry.retryCounter).isEqualTo(1)
     }
 
     @Test
