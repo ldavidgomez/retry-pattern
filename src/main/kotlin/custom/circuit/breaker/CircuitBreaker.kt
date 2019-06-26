@@ -24,6 +24,9 @@ class CircuitBreaker @Autowired constructor(private val logger: LoggerWrapper) {
     private val isTimerExpired: Boolean
         get() = lastFailure!!.plus(openTimeout) < LocalDateTime.now()
 
+    val errorCounter: Int
+        get() = errorsCount.get()
+
     enum class CircuitBreakerState {
         CLOSED,
         OPEN,
