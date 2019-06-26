@@ -27,6 +27,9 @@ class CircuitBreaker @Autowired constructor(private val logger: LoggerWrapper) {
     val errorCounter: Int
         get() = errorsCount.get()
 
+    val circuitState: CircuitBreakerState
+        get() = state
+
     enum class CircuitBreakerState {
         CLOSED,
         OPEN,
