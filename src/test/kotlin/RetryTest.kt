@@ -14,17 +14,16 @@ class RetryTest {
     private var success = "success"
     private var maxRetries = 3
 
-    @Before
-    fun setUp() {
-        MockitoAnnotations.initMocks(this)
-    }
-
     @Mock
     private lateinit var externalService: ExternalService
 
     private val logger: LoggerWrapper = LoggerWrapper()
     private lateinit var retry: Retry<String>
 
+    @Before
+    fun setUp() {
+        MockitoAnnotations.initMocks(this)
+    }
 
     @Test
     fun should_not_retry_when_successful() {
