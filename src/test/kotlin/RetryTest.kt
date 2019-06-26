@@ -39,7 +39,7 @@ class RetryTest {
     fun should_retry_once_then_succeed_when_first_fails_and_second_successes() {
         retry = Retry(logger, maxRetries)
         `when`(externalService.run())
-            .thenThrow(RuntimeException("Command Failed"))
+            .thenThrow(RuntimeException("Something was wrong..."))
             .thenReturn(success)
 
         val result = retry.run(externalService::run)
@@ -53,9 +53,9 @@ class RetryTest {
     fun should_throw_exception_when_max_retries() {
         retry = Retry(logger, maxRetries)
         `when`(externalService.run())
-            .thenThrow(RuntimeException("Command Failed"))
-            .thenThrow(RuntimeException("Command Failed"))
-            .thenThrow(RuntimeException("Command Failed"))
+            .thenThrow(RuntimeException("Something was wrong..."))
+            .thenThrow(RuntimeException("Something was wrong..."))
+            .thenThrow(RuntimeException("Something was wrong..."))
 
         assertThatThrownBy {
             retry.run(externalService::run)
