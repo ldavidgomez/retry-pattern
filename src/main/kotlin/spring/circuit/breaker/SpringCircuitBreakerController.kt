@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class SpringCircuitBreakerController @Autowired constructor(private val springExternalSampleService: SpringExternalSampleService) {
+class SpringCircuitBreakerController @Autowired constructor(private val springExternalCircuitBreakerService: SpringExternalCircuitBreakerService) {
 
     @GetMapping("/call-spring-external-service")
     fun callExternalCircuitBreakerService(): String {
-        return springExternalSampleService.run()
+        return springExternalCircuitBreakerService.run()
     }
 }

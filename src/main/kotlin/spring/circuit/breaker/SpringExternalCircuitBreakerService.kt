@@ -1,24 +1,23 @@
-package packageName.spring.retry
+package packageName.spring.circuit.breaker
 
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.remoting.RemoteAccessException
-import org.springframework.retry.annotation.Backoff
+import org.springframework.retry.annotation.CircuitBreaker
 import org.springframework.retry.annotation.Recover
-import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
 import packageName.wrappers.LoggerWrapper
 
 @Service
 @Slf4j
-class SpringExternalRetryService @Autowired constructor(private val logger: LoggerWrapper) {
+class SpringExternalCircuitBreakerService @Autowired constructor(private val logger: LoggerWrapper) {
 
     /**
-     * After throw an Exceptions, the next calls goes direct to recover() method.
+     * Annotated with maxAttempts = 3 for test.
+     * After throw an Exceptions, the next calls goes direct to fallback_run() method.
      *
      * @return
      */
-    @Retryable(maxAttempts = 2)
+    @CircuitBreaker(maxAttempts = 3, openTimeout = 5000L, resetTimeout = 20000L)
     fun run(): String {
         logger.info("Calling external service...")
         if (Math.random() > 0.5) {
@@ -34,8 +33,8 @@ class SpringExternalRetryService @Autowired constructor(private val logger: Logg
      * @return
      */
     @Recover
-    private fun recover(): String {
-        logger.error("Recover for external service")
+    private fun fallback_run(): String {
+        logger.error("Fallback for external service")
         return "Succes on fallback"
     }
 }
