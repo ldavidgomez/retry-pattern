@@ -11,7 +11,7 @@ import kotlin.reflect.KFunction0
 @Service
 class CircuitBreaker @Autowired constructor(private val logger: LoggerWrapper) {
 
-    private val maxAttempts = 2
+    private val maxAttempts = 3
     private val openTimeout = Duration.ofMillis(10000L)
     private var errorsCount: AtomicInteger = AtomicInteger(0)
     @Volatile
@@ -90,7 +90,7 @@ class CircuitBreaker @Autowired constructor(private val logger: LoggerWrapper) {
     private fun handleException(exception: Exception) {
         errorsCount.incrementAndGet()
         logger.error("Service fails for $errorsCount times.")
-        if (errorsCount.get() > maxAttempts) {
+        if (errorsCount.get() >= maxAttempts) {
             openCircuit(exception)
         }
     }
