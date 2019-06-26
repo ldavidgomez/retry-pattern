@@ -70,7 +70,6 @@ class CircuitBreaker @Autowired constructor(private val logger: LoggerWrapper) {
                 throw Exception("Circuit is still opened. Retrying at ${lastFailure!!.plus(openTimeout)}")
             }
 
-            throw lastExceptionThrown!!
         }
     }
 
@@ -91,7 +90,7 @@ class CircuitBreaker @Autowired constructor(private val logger: LoggerWrapper) {
     private fun handleException(exception: Exception) {
         errorsCount.incrementAndGet()
         logger.error("Service fails for $errorsCount times.")
-        if (errorsCount.get() !in 0..maxAttempts) {
+        if (errorsCount.get() > maxAttempts) {
             openCircuit(exception)
         }
     }
