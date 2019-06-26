@@ -5,17 +5,20 @@ import org.springframework.stereotype.Service
 import packageName.wrappers.LoggerWrapper
 import java.time.Duration
 import java.time.LocalDateTime
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.reflect.KFunction0
 
 @Service
 class CircuitBreaker @Autowired constructor(private val logger: LoggerWrapper) {
 
     private val maxAttempts = 2
-    private val openTimeout = Duration.ofMillis(5000L)
-    private var errorsCount: Int = 0
+    private val openTimeout = Duration.ofMillis(10000L)
+    private var errorsCount: AtomicInteger = AtomicInteger(0)
     @Volatile
     private var state = CircuitBreakerState.CLOSED
+    @Volatile
     private var lastExceptionThrown: Exception? = null
+    @Volatile
     private var lastFailure: LocalDateTime? = null
 
     private val isTimerExpired: Boolean
@@ -44,16 +47,21 @@ class CircuitBreaker @Autowired constructor(private val logger: LoggerWrapper) {
             if (state == CircuitBreakerState.HALF_OPEN || isTimerExpired) {
                 state = CircuitBreakerState.HALF_OPEN
 
+                logger.info("Time to retry...")
+
                 try {
                     action.invoke()
+                    logger.info("Success when HALF_OPEN")
                     resetCircuit()
                 } catch (ex: Exception) {
+                    logger.info("Fails when HALF_OPEN")
                     openCircuit(ex)
                     throw Exception("Fails when HALF_OPEN")
                 }
 
             } else {
-                throw Exception("Circuit is still opened. Retry time ${lastFailure!!.plus(openTimeout)}")
+                logger.info("Circuit is still opened. Retrying at ${lastFailure!!.plus(openTimeout)}")
+                throw Exception("Circuit is still opened. Retrying at ${lastFailure!!.plus(openTimeout)}")
             }
 
             throw lastExceptionThrown!!
@@ -68,16 +76,16 @@ class CircuitBreaker @Autowired constructor(private val logger: LoggerWrapper) {
     }
 
     private fun resetCircuit() {
-        errorsCount = 0
+        errorsCount.set(0)
         lastExceptionThrown = null
         state = CircuitBreakerState.CLOSED
         logger.info("Closing circuit...")
     }
 
     private fun handleException(exception: Exception) {
-        errorsCount++
+        errorsCount.incrementAndGet()
         logger.error("Service fails for $errorsCount times.")
-        if (errorsCount >= maxAttempts) {
+        if (errorsCount.get() !in 0..maxAttempts) {
             openCircuit(exception)
         }
     }

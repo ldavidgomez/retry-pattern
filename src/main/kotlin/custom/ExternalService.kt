@@ -1,4 +1,4 @@
-package packageName.spring.circuit.breaker
+package packageName.custom.circuit.breaker
 
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
@@ -7,7 +7,7 @@ import packageName.wrappers.LoggerWrapper
 
 @Service
 @Slf4j
-class CustomSampleService @Autowired constructor(private val logger: LoggerWrapper) {
+class ExternalService @Autowired constructor(private val logger: LoggerWrapper) {
 
     fun run(): String {
         logger.info("Calling external service...")
