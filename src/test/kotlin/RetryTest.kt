@@ -12,7 +12,6 @@ import packageName.wrappers.LoggerWrapper
 class RetryTest {
 
     private var success = "success"
-    private var maxRetries = 3
 
     @Mock
     private lateinit var externalService: ExternalService
@@ -27,7 +26,7 @@ class RetryTest {
 
     @Test
     fun should_not_retry_when_successful() {
-        retry = Retry(logger, maxRetries)
+        retry = Retry(logger)
 
         val result = retry.run { success }
 
@@ -37,7 +36,7 @@ class RetryTest {
 
     @Test
     fun should_retry_once_then_succeed_when_first_fails_and_second_successes() {
-        retry = Retry(logger, maxRetries)
+        retry = Retry(logger)
         `when`(externalService.run())
             .thenThrow(RuntimeException("Something was wrong..."))
             .thenReturn(success)
@@ -50,7 +49,7 @@ class RetryTest {
 
     @Test
     fun should_throw_exception_when_max_retries() {
-        retry = Retry(logger, maxRetries)
+        retry = Retry(logger)
         `when`(externalService.run())
             .thenThrow(RuntimeException("Something was wrong..."))
             .thenThrow(RuntimeException("Something was wrong..."))
@@ -59,7 +58,7 @@ class RetryTest {
         assertThatThrownBy {
             retry.run(externalService::run)
         }.isInstanceOf(RuntimeException::class.java)
-            .hasMessage("Command fails on all of $maxRetries retries")
+            .hasMessage("Command fails on all of 3 retries")
 
     }
 }

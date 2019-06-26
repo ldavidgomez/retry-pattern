@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController
 class SpringCircuitBreakerController @Autowired constructor(private val springExternalSampleService: SpringExternalSampleService) {
 
     @GetMapping("/call-spring-external-service")
-    fun callExternalSservice(): String {
+    fun callExternalCircuitBreakerService(): String {
         return springExternalSampleService.run()
     }
 }

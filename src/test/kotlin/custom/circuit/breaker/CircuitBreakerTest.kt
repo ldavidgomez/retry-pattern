@@ -9,7 +9,6 @@ import org.mockito.MockitoAnnotations
 import packageName.custom.circuit.breaker.CircuitBreaker
 import packageName.custom.circuit.breaker.ExternalService
 import packageName.wrappers.LoggerWrapper
-import java.time.Duration
 
 class CircuitBreakerTest {
 

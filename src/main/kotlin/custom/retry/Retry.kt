@@ -6,8 +6,9 @@ import packageName.wrappers.LoggerWrapper
 import kotlin.reflect.KFunction0
 
 @Service
-class Retry<T> @Autowired constructor(private val logger: LoggerWrapper, private val maxRetries: Int) {
+class Retry<T> @Autowired constructor(private val logger: LoggerWrapper) {
     var retryCounter: Int = 0
+    private val maxRetries: Int = 3
 
     fun run(action: KFunction0<T>): T {
         return try {
