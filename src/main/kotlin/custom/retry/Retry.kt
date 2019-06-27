@@ -32,6 +32,7 @@ class Retry<T> @Autowired constructor(private val logger: LoggerWrapper) {
                     logger.info("Max retries exceeded.")
                     break
                 }
+                Thread.sleep(5000L)
             }
 
         }
