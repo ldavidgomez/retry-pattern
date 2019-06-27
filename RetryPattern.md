@@ -102,7 +102,9 @@ Existen librerías que implementan de manera muy sencilla el patrón Retry, como
 Como podemos ver la implementación mediante librería es muy sencilla.
 En el ejemplo podemos observar que lo primero que hay que hacer es configurar la aplicación con la anotación `@EnableRetry`.
 
-A continuación añadimos la anotación `@Retryable` con el que se indica el método que va a ser 'reintentable' en caso de error. La anotación `@Recover` indica por donde continuará la ejecución en el caso de que se superen el número máximo de intentos (`maxAttempts = 2`) y siempre y cuando el error sea del tipo `RemoteAccessException`.
+A continuación añadimos la anotación `@Retryable` con el que se indica el método que va a ser 'reintentable' en caso de error. La anotación `@Recover` indica por donde continuará la ejecución en el caso de que se superen el número máximo de intentos (`maxAttempts = 2`) y siempre y cuando el error sea del tipo `RemoteAccessException`. 
+
+Podéis encontrar este ejemplo completo y funcionando en el github enlazado [al final del artículo](#source-code). 
 
 Podemos comprobar en la salida por consola el flujo del patrón. La ejecución se ha realizado correctamente hasta que ha encontrado un error transitorio, en ese momento ha reintentado la operación dos veces tal y como se ha especificado en la configuración y al continuar dándose el mismo error ha salido por el método de recover.
 
@@ -136,5 +138,7 @@ Este patrón funciona muy bien cuando los errores son transitorios, esporádicos
 Por último indicar que es altamente recomendable guarda un registro de las operaciones fallidas ya que es una información de gran utilidad para ayudar a dimensionar correctamente las infraestructuras de un proyecto y a encontrar errores recurrentes y silenciados por la gestión de errores de la aplicación.
 
 Podéis encontrar los ejemplos completos tratados en este artículo en nuestro [github].
+
+### <a id="source-code"></a>
 
 [github]: https://github.com/ldavidgomez/retry-pattern
