@@ -30,7 +30,7 @@ Estas acciones pueden combinarse para crear una política de reintentos ajustada
 Este sería un ejemplo de una implementación simple en Kotlin donde solo se tiene en cuenta el número de intentos fallidos:
 
 ```kotlin
-    fun run(action: KFunction0<T>): T {
+    fun run(action: () -> T): T {
         return try {
             action.invoke()
         } catch (e: Exception) {
@@ -40,11 +40,11 @@ Este sería un ejemplo de una implementación simple en Kotlin donde solo se tie
     }
 
     @Throws(RuntimeException::class)
-    private fun retry(function: KFunction0<T>): T {
+    private fun retry(action: () -> T): T {
         retryCounter = 1
         while (retryCounter < maxRetries) {
             try {
-                return function.invoke()
+                return action.invoke()
             } catch (ex: Exception) {
                 retryCounter++
                 if (retryCounter >= maxRetries) {
