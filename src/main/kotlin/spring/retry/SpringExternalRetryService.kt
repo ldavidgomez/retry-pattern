@@ -31,7 +31,7 @@ class SpringExternalRetryService @Autowired constructor(private val logger: Logg
      */
     @Recover
     private fun recover(e: RemoteAccessException): String {
-        logger.error("Recover for external service")
+        logger.error("Recover output")
         return "Succes on fallback"
     }
 }
