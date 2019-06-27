@@ -17,7 +17,7 @@ El patrón Retry está englobado dentro de lo que se ha comenzado a conocer como
 
 * *Reintentar*: Si el error indica que es un fallo temporal o un fallo atípico la aplicación puede reintentar la misma operación de manera inmediata ya que seguramente no vuelva a producirse el mismo error.
 
-* *Reintentar tras un tiempo de espera*: Si el error se ha producido debido a un problema de conexión o bien por un pico de rendimiento, puede ser prudente dejar pasar un tiempo antes de intentar volver a realizar la operación.
+* *Reintentar tras un tiempo de espera*: Si el error se ha producido debido a un problema de conexión a la red o bien por un pico de peticiones al servicio, puede ser prudente dejar pasar un tiempo antes de intentar volver a realizar la operación.
 
 * *Cancelar*: Si el error indica que no nos encontramos ante un fallo temporal la operación debería ser cancelada y el error reportado o gestionado de manera adecuada.
 
