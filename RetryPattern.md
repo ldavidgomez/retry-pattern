@@ -118,7 +118,7 @@ Este patrón funciona muy bien cuando los errores son transitorios, esporádicos
 
 * *La criticidad del error:* reintentar la operación puede influir negativamente en el rendimiento de la aplicación. En algunas situaciones es más óptimo gestionar el error y pedir al usuario que decida si quiere reintentar la operación.
 
-* *La política de reintentos:* una política de continuos reintentos de la operación, especialmente sin tiempos de espera, podría empeorar la situación del servicio remoto.
+* *La política de reintentos:* una política de continuos reintentos de la operación, especialmente sin tiempos de espera, podría empeorar el estado del servicio remoto.
 
 * *Efectos colaterales:* Si la operación no es idempotente no se puede garantizar que reintentar su ejecución concluya  con el resultado esperado.
 
