@@ -1,4 +1,4 @@
-### Patrón Retry
+### El patrón Retry
 
 En aplicaciones distribuidas, donde se realizan constantes comunicaciones entre servicios y/o recursos externos, 
 se pueden producir errores temporales o transitorios (transient failures) cuando se interactúa con estos entornos. Estos fallos pueden estar causados por diferentes motivos, entre los más comunes encontramos las perdidas momentáneas de conexión a la red, servicios temporalmente no disponibles, tiempos de respuesta excedidos por picos de servicio elevados, etc.
@@ -76,13 +76,13 @@ Existen librerías que implementan de manera muy sencilla el patrón Retry, como
     	@Retryable(maxAttempts = 2, include = [RemoteAccessException::class])
     	fun service() {
             // ... do something
-            println("")
+            logger.info("Success calling external service")
         }
         
         @Recover
         fun recover(e: RemoteAccessException) {
             // ... do something when call to service fails
-            println(""Recover for external service"")
+            logger.error("Recover for external service")
         }
     }
 ```
