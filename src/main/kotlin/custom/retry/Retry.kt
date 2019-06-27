@@ -14,7 +14,7 @@ class Retry<T> @Autowired constructor(private val logger: LoggerWrapper) {
     private val maxRetries: Int = 3
     @Volatile
     private var lastFailure: LocalDateTime? = null
-    private val delay = Duration.ofMillis(2000L)
+    private val delay = Duration.ofMillis(1000L)
     private val countdownFlag: Boolean = false
 
     private val isTimerExpired: Boolean
@@ -27,7 +27,9 @@ class Retry<T> @Autowired constructor(private val logger: LoggerWrapper) {
         return try {
             action.invoke()
         } catch (e: Exception) {
+            retryCounter.addAndGet(1)
             lastFailure = LocalDateTime.now()
+            logger.error("FAILED - Command fails $retryCounter, it will be retried ${maxRetries.minus(retryCounter.get())} times.")
             retry(action)
         }
 
@@ -35,15 +37,13 @@ class Retry<T> @Autowired constructor(private val logger: LoggerWrapper) {
 
     @Throws(RuntimeException::class)
     private fun retry(action: () -> T): T {
-        logger.error("FAILED - Command fails, will be retried $maxRetries times.")
-        retryCounter.set(1)
         while (retryCounter.get() < maxRetries) {
             if (isTimerExpired) {
                 try {
                     return action.invoke()
                 } catch (ex: Exception) {
                     retryCounter.addAndGet(1)
-                    logger.error("FAILED - Command fails on retry $retryCounter of $maxRetries error: $ex")
+                    logger.error("FAILED - Command fails $retryCounter, it will be retried ${maxRetries.minus(retryCounter.get())} times.")
                     if (retryCounter.get() >= maxRetries) {
                         logger.info("Max retries exceeded.")
                         break
