@@ -5,7 +5,9 @@ se pueden producir errores temporales o transitorios (transient failures) cuando
 
 Normalmente estos errores se solucionan de manera automática y en un breve lapso de tiempo de manera que si el servicio o recurso vuelve a ser invocado inmediatamente responde de manera correcta. Un ejemplo clásico de error transitorio es el fallo de conexión con la base de datos debido a un pico de conexiones simultaneas que exceden el máximo número permitido por configuración. 
 
-![alt text](https://raw.githubusercontent.com/ldavidgomez/retry-pattern/master/Retry%20Pattern_trans.png "Retry pattern")
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ldavidgomez/retry-pattern/master/Retry%20Pattern_trans.png">
+</p>
 
 Sin embargo y a pesar de que son errores poco frecuentes, estos fallos deben ser gestionados de manera correcta por la aplicación para minimizar el impacto en esta. Una posible solución a este problema es la aplicación del patrón Retry. 
 
@@ -18,6 +20,10 @@ El patrón Retry está englobado dentro de lo que se ha comenzado a conocer como
 * *Reintentar tras un tiempo de espera*: Si el error se ha producido debido a un problema de conexión o bien por un pico de rendimiento, puede ser prudente dejar pasar un tiempo antes de intentar volver a realizar la operación.
 
 * *Cancelar*: Si el error indica que no nos encontramos ante un fallo temporal la operación debería ser cancelada y el error reportado o gestionado de manera adecuada.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ldavidgomez/retry-pattern/master/Retry_pattern_flow.png">
+</p>
 
 Estas acciones pueden combinarse para crear una política de reintentos ajustada a las necesidades de nuestra aplicación. Este sería un ejemplo de una implementación simple en Kotlin donde solo se tiene en cuenta el número de intentos fallidos:
 
