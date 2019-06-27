@@ -27,13 +27,14 @@ Estas acciones pueden combinarse para crear una política de reintentos ajustada
   <img src="https://raw.githubusercontent.com/ldavidgomez/retry-pattern/master/Retry_pattern_flow.png">
 </p>
 
-Este sería un ejemplo de una implementación simple en Kotlin donde solo se tiene en cuenta el número de intentos fallidos:
+Este sería un ejemplo de una implementación simple en Kotlin donde solo se tiene en cuenta el número de intentos fallidos y hay un tiempo de espera entre cada reintento:
 
 ```kotlin
     fun run(action: () -> T): T {
         return try {
             action.invoke()
         } catch (e: Exception) {
+            lastFailure = LocalDateTime.now()
             retry(action)
         }
 
@@ -43,16 +44,19 @@ Este sería un ejemplo de una implementación simple en Kotlin donde solo se tie
     private fun retry(action: () -> T): T {
         retryCounter = 1
         while (retryCounter < maxRetries) {
-            try {
-                return action.invoke()
-            } catch (ex: Exception) {
-                retryCounter++
-                if (retryCounter >= maxRetries) {
-                    break
+            if (isTimerExpired) {
+                try {
+                    return action.invoke()
+                } catch (ex: Exception) {
+                    retryCounter++
+                    if (retryCounter >= maxRetries) {
+                        break
+                    }
+                    
                 }
             }
-
         }
+        
         throw RuntimeException("Command fails on all retries")
     }
 ```
