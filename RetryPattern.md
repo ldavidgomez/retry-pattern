@@ -21,11 +21,13 @@ El patrón Retry está englobado dentro de lo que se ha comenzado a conocer como
 
 * *Cancelar*: Si el error indica que no nos encontramos ante un fallo temporal la operación debería ser cancelada y el error reportado o gestionado de manera adecuada.
 
+Estas acciones pueden combinarse para crear una política de reintentos ajustada a las necesidades de nuestra aplicación.
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/ldavidgomez/retry-pattern/master/Retry_pattern_flow.png">
 </p>
 
-Estas acciones pueden combinarse para crear una política de reintentos ajustada a las necesidades de nuestra aplicación. Este sería un ejemplo de una implementación simple en Kotlin donde solo se tiene en cuenta el número de intentos fallidos:
+Este sería un ejemplo de una implementación simple en Kotlin donde solo se tiene en cuenta el número de intentos fallidos:
 
 ```kotlin
     fun run(action: KFunction0<T>): T {
@@ -93,7 +95,8 @@ Existen librerías que implementan de manera muy sencilla el patrón Retry, como
     }
 ```
 
-En el ejemplo lo primero que podemos ver es que hay que configurar la aplicación con la anotación `@EnableRetry`.
+Como podemos ver la implementación mediante librería es muy sencilla.
+En el ejemplo podemos observar que lo primero que hay que hacer es configurar la aplicación con la anotación `@EnableRetry`.
 
 A continuación añadimos la anotación `@Retryable` con el que se indica el método que va a ser 'reintentable' en caso de error. La anotación `@Recover` indica por donde continuará la ejecución en el caso de que se superen el número máximo de intentos (`maxAttempst = 2`) y siempre y cuando el error sea del tipo `RemoteAccessException`.
 
@@ -117,7 +120,7 @@ Este patrón funciona muy bien cuando los errores son transitorios, esporádicos
 
 * *La política de reintentos:* una política de continuos reintentos de la operación, especialmente sin tiempos de espera, podría empeorar la situación del servicio remoto.
 
-* *Efectos colaterales:* Si la operación no es idempotente no podemos garantizar que reintentar su ejecución concluya  con el resultado esperado.
+* *Efectos colaterales:* Si la operación no es idempotente no se puede garantizar que reintentar su ejecución concluya  con el resultado esperado.
 
 
 **No es recomendable utilizar este patrón para:**
