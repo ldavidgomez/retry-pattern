@@ -99,7 +99,7 @@ Existen librerías que implementan de manera muy sencilla el patrón Retry, como
     }
 ```
 
-Como podemos ver la implementación mediante librería es muy sencilla.
+Como podemos ver la implementación mediante esta librería es muy sencilla.
 En el ejemplo podemos observar que lo primero que hay que hacer es configurar la aplicación con la anotación `@EnableRetry`.
 
 A continuación añadimos la anotación `@Retryable` con el que se indica el método que va a ser 'reintentable' en caso de error. La anotación `@Recover` indica por donde continuará la ejecución en el caso de que se superen el número máximo de intentos (`maxAttempts = 2`) y siempre y cuando el error sea del tipo `RemoteAccessException`. 
