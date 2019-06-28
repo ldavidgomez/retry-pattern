@@ -1,7 +1,7 @@
 ### El patrón Retry
 
 En aplicaciones distribuidas, donde se realizan constantes comunicaciones entre servicios y/o recursos externos, 
-se pueden producir errores temporales o transitorios (transient failures) cuando se interactúa con estos entornos. Estos fallos pueden estar causados por diferentes motivos, entre los más comunes encontramos las perdidas momentáneas de conexión a la red, servicios temporalmente no disponibles, tiempos de respuesta excedidos por picos de servicio elevados, etc.
+se pueden producir errores temporales o transitorios (transient failures) cuando se interactúa con estos entornos. Estos fallos pueden estar causados por diferentes motivos, entre los más comunes encontramos las perdidas momentáneas de conexión a la red, servicios temporalmente no disponibles, tiempos de respuesta excedidos, etc.
 
 Normalmente estos errores se solucionan de manera automática y en un breve lapso de tiempo de manera que si el servicio o recurso vuelve a ser invocado inmediatamente responde de manera correcta. Un ejemplo clásico de error transitorio es el fallo de conexión con la base de datos debido a un pico de conexiones simultaneas que exceden el máximo número permitido por configuración. 
 
